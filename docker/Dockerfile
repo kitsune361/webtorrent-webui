@@ -15,7 +15,7 @@ COPY vpn-conf/ /usr/src/vpn-conf/
 WORKDIR /usr/src/vpn-conf
 
 # Install webtorrent-webui
-RUN npm i -g --unsafe webtorrent-webui
+RUN npm i -g --unsafe kitsune361/webtorrent-webui
 
 # Copy init script
 COPY init.sh /usr/src/vpn-conf
