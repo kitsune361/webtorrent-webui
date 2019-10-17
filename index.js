@@ -9,18 +9,15 @@ let help = `Webtorrent Web UI
    -d  sets the download folder        - default ~/Downloads
    -v  gives a console status msg/sec  - default disabled
    -l  sets the host to listen to      - default 127.0.0.1
-   -p  sets the port to listen to      - default 9081`
+   -p  sets the port to listen to      - default 9081
+   -y  uses webtorrent-hybrid          - default disabled`
 
 function die (msg, code) {
   console.log(msg)
   process.exit(code)
 }
 
-module.exports = function start (hybrid) {
-  if (hybrid) {
-    help = help + '\r\nThis hybrid version runs webtorrent-hybrid'
-  }
-
+module.exports = function start () {
   if (argv.h || argv.help) { return die(help, 0) }
 
   let tFolder = argv.t || (os.homedir() + '/.torrent_folder/')
@@ -28,6 +25,7 @@ module.exports = function start (hybrid) {
   const host = !argv.l ? ['127.0.0.1'] : typeof argv.l === 'string' ? [argv.l] : argv.l
   const port = argv.p ? parseInt(argv.p) : 9081
   const verb = !!argv.v
+  const hybrid = !!argv.y
 
   // Check input
   tFolder = tFolder.endsWith('/') ? tFolder : tFolder + '/'
@@ -54,7 +52,7 @@ module.exports = function start (hybrid) {
   let handler
 
   app.all('*', (req, res, next) => {
-    if (host.includes(req.hostname)) {
+    if (host.includes("0.0.0.0") || host.includes(req.hostname)) {
       next()
     } else {
       res.writeHead(403, { 'Connection': 'close' })
